@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, Spectral, Geist } from "next/font/google";
+import { Archivo, Spectral, Geist } from "next/font/google";
 import "./globals.css";
 
-const display = Bricolage_Grotesque({
+const display = Archivo({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+  weight: ["500", "600", "700", "800", "900"],
   variable: "--font-display",
   display: "swap",
 });
 const serif = Spectral({
   subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
+  weight: ["300", "400", "500"],
   style: ["normal", "italic"],
   variable: "--font-serif",
   display: "swap",
@@ -28,11 +28,7 @@ export const metadata: Metadata = {
     "Ingénieur en Génie Civil — spécialisation structures : béton armé, charpente métallique, dynamique des structures. En recherche d'un stage Ingénieur Structures (4–6 mois).",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="fr">
       <body className={`${display.variable} ${serif.variable} ${body.variable}`}>
@@ -42,12 +38,12 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html:
               "<!--\n" +
-              "ATELIER INDEX — direction contract (seed 0b6a2871, form #6 of grounded list)\n" +
-              "THESIS: The portfolio as a studio's art-directed INDEX; oversized index numerals + asymmetric editorial grid carry real 3D renders. Refuses the conventional dev-portfolio hero+card-grid.\n" +
-              "OWN-WORLD: Warm paper (#F4F1EA), near-black ink (#0E0E10), one terracotta accent (#B24A2E), warm stone. Bricolage Grotesque display, Spectral serif voice, Geist body. Full-bleed renders framed by hairline rules; giant tabular index numerals; expanding overlay menu.\n" +
-              "STORY: A recruiter grasps 'structures engineer with real rendered projects + a publication' fast, explores the indexed work via view transitions, reaches contact/CV in one action.\n" +
-              "FIRST VIEWPORT: Near-full-bleed lead render; huge tight wordmark; giant index numeral; expanding menu top-right; availability + primary action legible.\n" +
-              "FORM: editorial art-direction spread; #6 of grounded list; seed key 0b6a2871.\n" +
+              "CHANTIER — direction contract (variation of seed 0b6a2871, bold register of the editorial family)\n" +
+              "THESIS: The portfolio as a construction site-hoarding / civic billboard; the work at architectural scale, enormous type over full-bleed renders. Refuses the quiet refined editorial (that is the Atelier Index sibling).\n" +
+              "OWN-WORLD: Off-white (#F2F0EC) + near-black ink (#141414); ONE loud safety accent — signal orange-red (#F0512A); ink hazard bands used as full-width fields. Archivo heavy/expanded display at billboard scale, Geist body, Spectral only for a rare aside. Full-bleed renders as bands; coordinate tick marks; a loud availability notice.\n" +
+              "STORY: A recruiter is hit immediately with 'structures engineer, at scale, available', scans the loud indexed work, and acts (email/CV) with zero friction.\n" +
+              "FIRST VIEWPORT: A full-bleed render band; the name set ENORMOUS across/over it; a single loud accent notice bar with availability; primary action loud and obvious.\n" +
+              "FORM: site-hoarding / civic billboard; bold register of editorial spread; seed key 0b6a2871 (variation).\n" +
               "FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md\n" +
               "-->",
           }}
