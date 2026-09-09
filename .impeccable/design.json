@@ -1,0 +1,164 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-09T20:41:48.441Z",
+  "title": "Design System: Atelier Index",
+  "extensions": {
+    "colorMeta": {
+      "paper": { "role": "neutral", "displayName": "Warm Paper", "canonical": "#F4F1EA", "tonalRamp": ["#2B291F", "#4A4636", "#6E695D", "#8A8578", "#B7B2A6", "#D8D2C4", "#EDE8DD", "#F4F1EA"] },
+      "paper-2": { "role": "neutral", "displayName": "Deeper Paper", "canonical": "#EDE8DD", "tonalRamp": ["#26241B", "#454133", "#6E695D", "#8A8578", "#B7B2A6", "#D8D2C4", "#E6E0D3", "#EDE8DD"] },
+      "ink": { "role": "neutral", "displayName": "Near-Black Ink", "canonical": "#0E0E10", "tonalRamp": ["#0E0E10", "#1B1B1D", "#26251F", "#3A392F", "#57544A", "#8A8578", "#B7B2A6", "#EDE8DD"] },
+      "ink-2": { "role": "neutral", "displayName": "Soft Ink", "canonical": "#26251F", "tonalRamp": ["#121109", "#1C1B12", "#26251F", "#3A392F", "#57544A", "#8A8578", "#B7B2A6", "#E6E0D3"] },
+      "stone": { "role": "neutral", "displayName": "Warm Stone", "canonical": "#8A8578", "tonalRamp": ["#2B2A24", "#454236", "#5C584B", "#6E695D", "#8A8578", "#ABA697", "#CFCABB", "#EDE8DD"] },
+      "stone-2": { "role": "neutral", "displayName": "Dark Stone", "canonical": "#6E695D", "tonalRamp": ["#26241C", "#3C392E", "#524E42", "#6E695D", "#8A8578", "#ABA697", "#CFCABB", "#EDE8DD"] },
+      "line": { "role": "neutral", "displayName": "Hairline", "canonical": "#D8D2C4", "tonalRamp": ["#2B2A22", "#454235", "#6E695D", "#8A8578", "#B7B2A6", "#D8D2C4", "#E6E0D3", "#F4F1EA"] },
+      "accent": { "role": "primary", "displayName": "Terracotta", "canonical": "#B24A2E", "tonalRamp": ["#3C160C", "#5A2213", "#78301C", "#9A3D24", "#B24A2E", "#CB6A4F", "#E0A08D", "#F2D8CD"] },
+      "accent-2": { "role": "primary", "displayName": "Deep Terracotta", "canonical": "#9A3D24", "tonalRamp": ["#33130A", "#4E1D10", "#6C2917", "#87351E", "#9A3D24", "#BC5E44", "#DA9885", "#F1D6CB"] },
+      "on-ink": { "role": "neutral", "displayName": "Paper-on-Ink", "canonical": "#F4F1EA", "tonalRamp": ["#2B291F", "#4A4636", "#6E695D", "#8A8578", "#B7B2A6", "#D8D2C4", "#EDE8DD", "#F4F1EA"] },
+      "on-ink-mut": { "role": "neutral", "displayName": "Muted-on-Ink", "canonical": "#B7B2A6", "tonalRamp": ["#2B2A22", "#454235", "#5C584B", "#6E695D", "#8A8578", "#B7B2A6", "#D8D2C4", "#EDE8DD"] }
+    },
+    "typographyMeta": {
+      "index": { "displayName": "Index Numeral", "purpose": "Giant terracotta tabular folio number leading every section head. The loudest element." },
+      "display": { "displayName": "Display / Wordmark", "purpose": "The oversized hero name; used once per page." },
+      "title": { "displayName": "Title", "purpose": "Section, publication, contact, and project titles." },
+      "serif": { "displayName": "Serif Voice", "purpose": "Spectral for reflective leads and detail descriptions only — the human voice." },
+      "body": { "displayName": "Body", "purpose": "Geist paragraphs, descriptions, and specs." },
+      "label": { "displayName": "Label", "purpose": "Uppercase Geist eyebrows, spec keys, captions, folio strings." }
+    },
+    "motion": [
+      { "name": "e-out", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Exponential ease-out; default for reveals, hovers, clip-path wipes, and the FLIP scale." },
+      { "name": "e-io", "value": "cubic-bezier(0.65, 0, 0.35, 1)", "purpose": "Symmetric ease-in-out for balanced two-way transitions." },
+      { "name": "reveal", "value": "opacity/translateY(26px) 0.7s e-out, sibling stagger ~90ms (max 5)", "purpose": "Scroll-in reveal for content blocks." },
+      { "name": "clip-plot-in", "value": "clip-path inset(0 100% 0 0) → inset(0) 0.8s e-out", "purpose": "Real renders wipe in left→right when their row enters view." },
+      { "name": "overlay-clip", "value": "clip-path inset(0 0 100% 0) → inset(0) 0.6s e-out", "purpose": "Full-screen overlay menu expands from the top edge." },
+      { "name": "flip-detail", "value": "WAAPI translate+scale from field rect, 480ms e-out", "purpose": "Project field FLIPs up into the centered detail dialog." },
+      { "name": "reduced-motion", "value": "prefers-reduced-motion: reduce disables all of the above", "purpose": "Every non-trivial animation is gated; reveals snap to final state." }
+    ],
+    "breakpoints": [
+      { "name": "edu", "value": "620px" },
+      { "name": "row", "value": "720px" },
+      { "name": "proj", "value": "820px" },
+      { "name": "nav", "value": "860px" },
+      { "name": "grid", "value": "900px" },
+      { "name": "container", "value": "1280px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Terracotta call-to-action with sliding arrow; the loudest interactive element.",
+      "html": "<a class=\"ds-btn-primary\" href=\"#\">Voir les projets <span class=\"ds-arrow\">&rarr;</span></a>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 13px 26px; border-radius: 999px; border: 1px solid #B24A2E; background: #B24A2E; color: #F4F1EA; font-family: Geist, system-ui, sans-serif; font-size: 15px; font-weight: 500; text-decoration: none; transition: transform .08s cubic-bezier(.16,1,.3,1), background .24s cubic-bezier(.16,1,.3,1), border-color .24s cubic-bezier(.16,1,.3,1); } .ds-btn-primary:hover { background: #9A3D24; border-color: #9A3D24; } .ds-btn-primary:active { transform: translateY(1px); } .ds-btn-primary:focus-visible { outline: 2px solid #B24A2E; outline-offset: 3px; } .ds-btn-primary .ds-arrow { transition: transform .24s cubic-bezier(.16,1,.3,1); } .ds-btn-primary:hover .ds-arrow { transform: translateX(4px); }"
+    },
+    {
+      "name": "Ink Button",
+      "kind": "button",
+      "refersTo": "button-ink",
+      "description": "Near-black button that inverts to outline on hover; used for primary email action.",
+      "html": "<a class=\"ds-btn-ink\" href=\"#\">Ecrire un e-mail</a>",
+      "css": ".ds-btn-ink { display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 13px 26px; border-radius: 999px; border: 1px solid #0E0E10; background: #0E0E10; color: #F4F1EA; font-family: Geist, system-ui, sans-serif; font-size: 15px; font-weight: 500; text-decoration: none; transition: background .24s cubic-bezier(.16,1,.3,1), color .24s cubic-bezier(.16,1,.3,1); } .ds-btn-ink:hover { background: transparent; color: #0E0E10; } .ds-btn-ink:active { transform: translateY(1px); } .ds-btn-ink:focus-visible { outline: 2px solid #B24A2E; outline-offset: 3px; }"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Ghost button with 1px ink border; fills ink on hover. Secondary action (CV download).",
+      "html": "<a class=\"ds-btn-outline\" href=\"#\">Telecharger le CV</a>",
+      "css": ".ds-btn-outline { display: inline-flex; align-items: center; gap: 10px; min-height: 48px; padding: 13px 26px; border-radius: 999px; border: 1px solid #0E0E10; background: transparent; color: #0E0E10; font-family: Geist, system-ui, sans-serif; font-size: 15px; font-weight: 500; text-decoration: none; transition: background .24s cubic-bezier(.16,1,.3,1), color .24s cubic-bezier(.16,1,.3,1); } .ds-btn-outline:hover { background: #0E0E10; color: #F4F1EA; } .ds-btn-outline:focus-visible { outline: 2px solid #B24A2E; outline-offset: 3px; }"
+    },
+    {
+      "name": "Animated Link",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "Inline link with a terracotta underline that grows left-to-right on hover.",
+      "html": "<a class=\"ds-link\" href=\"#\">cheikhoumarsy05@gmail.com</a>",
+      "css": ".ds-link { position: relative; display: inline-flex; align-items: center; min-height: 24px; padding-bottom: 2px; color: #0E0E10; font-family: Geist, system-ui, sans-serif; font-weight: 500; text-decoration: none; background-image: linear-gradient(#B24A2E, #B24A2E); background-size: 0% 1.5px; background-repeat: no-repeat; background-position: left bottom; transition: background-size .3s cubic-bezier(.16,1,.3,1), color .2s cubic-bezier(.16,1,.3,1); } .ds-link:hover { color: #B24A2E; background-size: 100% 1.5px; } .ds-link:focus-visible { outline: 2px solid #B24A2E; outline-offset: 3px; border-radius: 2px; }"
+    },
+    {
+      "name": "Tool Badge",
+      "kind": "chip",
+      "refersTo": "tool-badge",
+      "description": "Software/tool pill; default hairline variant and ink 'key' variant for daily drivers.",
+      "html": "<div style=\"display:flex;gap:10px;flex-wrap:wrap\"><span class=\"ds-tool key\">RSA</span><span class=\"ds-tool\">Archicad</span></div>",
+      "css": ".ds-tool { display: inline-flex; padding: 9px 16px; border: 1px solid #D8D2C4; border-radius: 999px; background: transparent; color: #0E0E10; font-family: Geist, system-ui, sans-serif; font-size: 14px; font-weight: 500; transition: border-color .2s cubic-bezier(.16,1,.3,1), color .2s cubic-bezier(.16,1,.3,1), background .2s cubic-bezier(.16,1,.3,1); } .ds-tool:hover { border-color: #B24A2E; color: #B24A2E; } .ds-tool.key { border-color: #0E0E10; background: #0E0E10; color: #F4F1EA; } .ds-tool.key:hover { background: #B24A2E; border-color: #B24A2E; color: #F4F1EA; }"
+    },
+    {
+      "name": "Tag",
+      "kind": "chip",
+      "refersTo": "tag",
+      "description": "Small informational metadata chip on project rows; no hover state.",
+      "html": "<div style=\"display:flex;gap:8px;flex-wrap:wrap\"><span class=\"ds-tag\">Beton arme</span><span class=\"ds-tag\">Archicad</span></div>",
+      "css": ".ds-tag { display: inline-flex; padding: 6px 13px; border: 1px solid #D8D2C4; border-radius: 999px; background: transparent; color: #6E695D; font-family: Geist, system-ui, sans-serif; font-size: 13px; }"
+    },
+    {
+      "name": "Media Card / Frame",
+      "kind": "card",
+      "refersTo": "card-frame",
+      "description": "Flat hairline-framed render surface on paper-2, with a floating caption pill. No shadow.",
+      "html": "<div class=\"ds-frame\"><span class=\"ds-frame-badge\">07 vues</span><span class=\"ds-frame-cap\">Maison Nafi Diom</span></div>",
+      "css": ".ds-frame { position: relative; overflow: hidden; border-radius: 4px; aspect-ratio: 4 / 3; background: #EDE8DD; } .ds-frame-badge { position: absolute; top: 14px; right: 14px; font-family: Geist, system-ui, sans-serif; font-size: 12px; font-weight: 500; letter-spacing: .06em; color: #0E0E10; background: color-mix(in srgb, #F4F1EA 90%, transparent); border-radius: 999px; padding: 6px 12px; backdrop-filter: blur(3px); } .ds-frame-cap { position: absolute; left: 14px; bottom: 14px; font-family: Geist, system-ui, sans-serif; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: #F4F1EA; background: color-mix(in srgb, #0E0E10 62%, transparent); border-radius: 6px; padding: 6px 11px; backdrop-filter: blur(2px); }"
+    },
+    {
+      "name": "Section Index Head",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "Signature: giant terracotta tabular numeral beside a Bricolage title and Spectral lead.",
+      "html": "<div class=\"ds-ed-head\"><p class=\"ds-ed-index\">04</p><div class=\"ds-ed-text\"><h2 class=\"ds-ed-title\">Projets</h2><p class=\"ds-ed-lead\">Conception, modelisation et calcul de batiments residentiels.</p></div></div>",
+      "css": ".ds-ed-head { display: grid; grid-template-columns: auto 1fr; gap: clamp(20px,4vw,64px); align-items: end; } .ds-ed-index { margin: 0; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 700; font-variant-numeric: tabular-nums; font-size: clamp(64px,12vw,168px); line-height: .82; letter-spacing: -.04em; color: #B24A2E; } .ds-ed-text { padding-bottom: .35em; } .ds-ed-title { margin: 0; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 600; font-size: clamp(30px,5vw,60px); line-height: 1; letter-spacing: -.03em; color: #0E0E10; } .ds-ed-lead { margin-top: clamp(16px,2vw,28px); font-family: Spectral, Georgia, serif; font-weight: 400; font-size: clamp(19px,2.2vw,26px); line-height: 1.5; color: #26251F; max-width: 34ch; }"
+    },
+    {
+      "name": "Overlay Menu",
+      "kind": "nav",
+      "refersTo": null,
+      "description": "Signature: full-screen ink panel opening via clip-path with giant staggered nav links.",
+      "html": "<div class=\"ds-overlay open\"><nav class=\"ds-overlay-nav\"><a href=\"#\"><span class=\"on\">01</span>A propos</a><a href=\"#\"><span class=\"on\">02</span>Experience</a><a href=\"#\"><span class=\"on\">03</span>Recherche</a></nav></div>",
+      "css": ".ds-overlay { position: relative; min-height: 320px; background: #0E0E10; color: #F4F1EA; padding: 40px clamp(20px,5vw,64px); clip-path: inset(0 0 100% 0); transition: clip-path .6s cubic-bezier(.16,1,.3,1); } .ds-overlay.open { clip-path: inset(0 0 0 0); } .ds-overlay-nav { display: flex; flex-direction: column; gap: clamp(6px,2vw,16px); } .ds-overlay-nav a { display: flex; align-items: baseline; gap: 18px; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 600; letter-spacing: -.03em; font-size: clamp(40px,11vw,84px); line-height: 1.02; color: #F4F1EA; text-decoration: none; transition: color .2s cubic-bezier(.16,1,.3,1); } .ds-overlay-nav a:hover { color: #B24A2E; } .ds-overlay-nav a .on { font-family: Geist, system-ui, sans-serif; font-size: 14px; font-weight: 500; letter-spacing: .1em; color: #B7B2A6; }"
+    },
+    {
+      "name": "Project Row",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "Signature: hairline-divided asymmetric index entry that FLIPs open into a detail overlay.",
+      "html": "<article class=\"ds-proj-row\"><div><div class=\"ds-proj-head\"><span class=\"ds-proj-num\">01</span><span class=\"ds-proj-kind\">Conception 3D · Structures</span></div><button class=\"ds-proj-title-btn\"><h3>Maison Nafi Diom</h3></button><p class=\"ds-proj-desc\">Villa R+2 — conception architecturale et modele structurel.</p><button class=\"ds-proj-open\">Voir les rendus <span>&rarr;</span></button></div></article>",
+      "css": ".ds-proj-row { display: grid; grid-template-columns: minmax(0,1.05fr) minmax(0,.95fr); gap: clamp(24px,4vw,64px); align-items: center; padding: clamp(32px,5vw,72px) 0; border-top: 1px solid #D8D2C4; border-bottom: 1px solid #D8D2C4; } .ds-proj-head { display: flex; align-items: baseline; gap: 18px; } .ds-proj-num { font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 700; font-variant-numeric: tabular-nums; font-size: clamp(30px,4vw,52px); line-height: .9; letter-spacing: -.03em; color: #B24A2E; } .ds-proj-kind { font-family: Geist, system-ui, sans-serif; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: #6E695D; } .ds-proj-title-btn { display: block; text-align: left; margin: 14px 0 0; background: none; border: 0; cursor: pointer; padding: 0; } .ds-proj-title-btn h3 { margin: 0; font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 700; font-size: clamp(30px,4.6vw,60px); line-height: .98; letter-spacing: -.035em; color: #0E0E10; transition: color .24s cubic-bezier(.16,1,.3,1); } .ds-proj-title-btn:hover h3 { color: #B24A2E; } .ds-proj-title-btn:focus-visible { outline: 2px solid #B24A2E; outline-offset: 4px; border-radius: 4px; } .ds-proj-desc { margin: 20px 0 0; font-family: Geist, system-ui, sans-serif; font-size: 16px; line-height: 1.6; color: #26251F; max-width: 46ch; } .ds-proj-open { display: inline-flex; align-items: center; gap: 8px; margin-top: 22px; min-height: 32px; background: none; border: 0; cursor: pointer; color: #B24A2E; font-family: Geist, system-ui, sans-serif; font-weight: 600; font-size: 14.5px; } .ds-proj-open span { transition: transform .24s cubic-bezier(.16,1,.3,1); } .ds-proj-open:hover span { transform: translateX(4px); } .ds-proj-open:focus-visible { outline: 2px solid #B24A2E; outline-offset: 3px; border-radius: 3px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Studio Index",
+    "overview": "Atelier Index treats a structural engineer's portfolio the way a design studio treats its own monograph: an art-directed index of work, not a dev-portfolio hero with a card grid. The whole surface is a warm printed spread — near-black ink on warm paper — organized by oversized tabular numerals that number each section like folios in a catalogue raisonne. Real 3D renders sit full-bleed inside hairline frames, the way plates are tipped into a fine book. A single terracotta voice does all the pointing; everything else is ink, stone, and paper. The personality is editorial, confident, and quiet where it can be so it can be loud where it counts. Depth is entirely flat — no drop shadows anywhere; separation is tone shifts (paper vs. paper-2 vs. ink bands) and 1px hairlines. The type does the drama: a heavy grotesque for the wordmark and numerals, a Spectral serif for the reflective 'voice' leads, and a clean Geist for body and labels. Motion is restrained and physical — an exponential ease-out carries reveals, a clip-path 'plot-in' wipes renders into view, and a FLIP transition scales a project field up into a full detail overlay. This is a clean break from the prior 'Bureau d'Etudes' blueprint world: no cold-concrete OKLCH palette, no steel-blue accent, no hand-drawn blueprint SVGs as the primary language. The anti-reference is the generic developer portfolio: centered hero, rounded shadowed cards, rainbow accents.",
+    "keyCharacteristics": [
+      "Warm paper ground with near-black ink and a single terracotta accent — no second hue.",
+      "Giant terracotta tabular index numerals number every section like folios.",
+      "Asymmetric editorial grid; renders go full-bleed inside 1px hairline frames.",
+      "Flat by default: depth from tone + hairline, never shadow.",
+      "Three-voice type system: Bricolage Grotesque display, Spectral serif, Geist body.",
+      "Signature moves: inverted ink 'Recherche' band, clip-path overlay menu, FLIP project gallery."
+    ],
+    "rules": [
+      { "name": "The One Voice Rule", "body": "Terracotta is the only chromatic color in the system. If a screen needs a 'second color,' the answer is tone (paper-2, ink, stone), not a new hue. Its rarity is what makes it read as intent.", "section": "colors" },
+      { "name": "The Ink-Band Inversion Rule", "body": "Deep focus moments (the Recherche/publication feature) invert to a near-black ink ground with paper text; the terracotta accent survives the inversion unchanged. Inversion is a spotlight, used at most once or twice per page.", "section": "colors" },
+      { "name": "The Numeral-as-Ornament Rule", "body": "Big tabular index numerals are the primary decorative device. Always Bricolage 700 with font-variant-numeric: tabular-nums and terracotta. They replace icons, badges, and colored blocks as the eye-catcher.", "section": "typography" },
+      { "name": "The Serif-is-Voice Rule", "body": "Spectral is reserved for reflective, human sentences (leads, descriptions). Never set labels, specs, or UI in serif; those are Geist.", "section": "typography" },
+      { "name": "The Flat-Paper Rule", "body": "Nothing casts a shadow. If an element needs to feel separate, change its tone or frame it with a hairline — never add box-shadow for depth.", "section": "elevation" },
+      { "name": "The Hairline-Frame Rule", "body": "Every real render and media surface is contained by a 4px-radius frame on a paper-2 ground; captions attach on a hairline border-top, echoing plate labels in a printed catalogue.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do open every section with a giant terracotta tabular index numeral in a .ed-head.",
+      "Do keep terracotta (#B24A2E) as the sole accent; reach for tone (paper-2, ink, stone) when you want contrast, per the One Voice Rule.",
+      "Do frame every real render full-bleed inside a 4px hairline frame on paper-2, with a caption on a border-top rule.",
+      "Do convey depth with tone shifts and 1px hairlines only — the Flat-Paper Rule forbids shadows.",
+      "Do use Spectral only for the reflective 'voice' (leads, descriptions) and Geist for all UI, labels, and specs.",
+      "Do ride --e-out (cubic-bezier(0.16,1,0.3,1)) for transitions and gate every non-trivial animation behind prefers-reduced-motion.",
+      "Do keep controls fully round (999px) and structural surfaces at 4px — two radii, no third."
+    ],
+    "donts": [
+      "Don't add a second accent hue, gradient fills, or rainbow tool badges — terracotta is the only voice.",
+      "Don't apply box-shadow for elevation; there are no lifted or floating cards.",
+      "Don't revert to the old blueprint world (steel-blue accent, cold-concrete OKLCH, hand-drawn plan SVGs as the primary language) — the restyled blueprint field is a fallback only.",
+      "Don't set body, labels, or specs in the serif, or set the reflective leads in Geist.",
+      "Don't center the hero into a generic 'hero + card grid' — the layout is an asymmetric editorial index.",
+      "Don't use a middle radius (8/12/16px) or square off the pills; keep the sharp-rectangle / full-round contrast."
+    ]
+  }
+}
