@@ -35,3 +35,6 @@ yarn-error.log*
 
 # local impeccable working state
 .impeccable/
+
+# kiro agent working state
+.kiro/
