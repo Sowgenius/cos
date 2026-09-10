@@ -30,9 +30,5 @@ yarn-error.log*
 !.vscode/extensions.json
 .idea
 
-# local impeccable working state (keep PRODUCT.md, DESIGN.md, .impeccable/design.json tracked)
-.impeccable/live/
-.impeccable/sketches/
-.impeccable/world-choice.json
-.impeccable/questions/
-.impeccable/critique/
+# local impeccable working state
+.impeccable/
