@@ -33,5 +33,3 @@ yarn-error.log*
 !.vscode/extensions.json
 .idea
 
-# local impeccable working state
-.impeccable/
