@@ -1,0 +1,19 @@
+import type { GlobalConfig } from "payload";
+
+export const Publication: GlobalConfig = {
+  slug: "publication",
+  admin: { group: "Sections" },
+  access: { read: () => true },
+  fields: [
+    { name: "title", type: "text", required: true },
+    { name: "sub", type: "text", required: true, label: "Sous-titre" },
+    { name: "points", type: "array", label: "Points", fields: [{ name: "value", type: "textarea", required: true }] },
+    { name: "doi", type: "text", required: true, label: "DOI (texte)" },
+    { name: "doiUrl", type: "text", required: true, label: "Lien DOI" },
+    { name: "sideFacts", type: "array", label: "Encart (rail)", fields: [
+      { name: "k", type: "text", required: true },
+      { name: "v", type: "text", required: true },
+      { name: "accent", type: "checkbox", defaultValue: false },
+    ] },
+  ],
+};

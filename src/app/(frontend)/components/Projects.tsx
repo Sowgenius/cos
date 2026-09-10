@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { projects, type Project } from "../data/projects";
+import { type Project } from "@/data/projects";
 import { blueprintFor } from "./Blueprints";
 
 /* blur-up render (handles cached-complete race) */
@@ -144,7 +144,7 @@ function ProjectDetail({ project, onClose }: { project: Project; onClose: () => 
   );
 }
 
-export default function Projects() {
+export default function Projects({ projects }: { projects: Project[] }) {
   const [openId, setOpenId] = useState<string | null>(null);
   const rowRefs = useRef<Record<string, HTMLElement | null>>({});
   const triggerRef = useRef<HTMLElement | null>(null);
