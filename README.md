@@ -109,4 +109,3 @@ When you change collections/globals, generate a migration locally (`pnpm migrate
 ## Notes
 
 - Source assets (heavy CAD files / renders under `Docs/`) and runtime uploads (`public/uploads/`) are gitignored; optimized copies live in `public/`.
-- The `.impeccable/` design-tool working directory is gitignored and not part of the app.
