@@ -4,9 +4,12 @@ import "./globals.css";
 
 const display = Archivo({
   subsets: ["latin"],
-  weight: ["500", "600", "700", "800", "900"],
+  weight: ["600", "700", "800", "900"],
   variable: "--font-display",
   display: "swap",
+  preload: true,
+  adjustFontFallback: true,
+  fallback: ["Arial", "sans-serif"],
 });
 const serif = Spectral({
   subsets: ["latin"],
@@ -14,12 +17,16 @@ const serif = Spectral({
   style: ["normal", "italic"],
   variable: "--font-serif",
   display: "swap",
+  preload: false,
+  fallback: ["Georgia", "serif"],
 });
 const body = Geist({
   subsets: ["latin"],
   weight: ["400", "500", "600"],
   variable: "--font-body",
   display: "swap",
+  preload: false,
+  fallback: ["system-ui", "sans-serif"],
 });
 
 export const metadata: Metadata = {
