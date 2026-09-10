@@ -171,24 +171,65 @@ export interface Project {
       }[]
     | null;
   /**
-   * Laisser vide pour afficher le plan schématique (blueprint).
+   * Laisser vide pour afficher le plan schématique (blueprint). Téléversez une image OU indiquez un chemin /public.
    */
   images?:
     | {
         /**
-         * Chemin WebP dans /public, ex. /projects/nafi-1.webp
+         * Recommandé : téléversez le rendu ici.
          */
-        src: string;
+        upload?: (number | null) | Media;
         /**
-         * JPEG de repli optionnel
+         * Alternative : chemin WebP dans /public, ex. /projects/nafi-1.webp
+         */
+        src?: string | null;
+        /**
+         * JPEG de repli optionnel (chemin /public)
          */
         fallback?: string | null;
-        alt: string;
+        alt?: string | null;
         id?: string | null;
       }[]
     | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: number;
+  alt: string;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+  sizes?: {
+    thumb?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+    wide?: {
+      url?: string | null;
+      width?: number | null;
+      height?: number | null;
+      mimeType?: string | null;
+      filesize?: number | null;
+      filename?: string | null;
+    };
+  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -234,25 +275,6 @@ export interface Education {
   org: string;
   updatedAt: string;
   createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
- */
-export interface Media {
-  id: number;
-  alt: string;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -397,6 +419,7 @@ export interface ProjectsSelect<T extends boolean = true> {
   images?:
     | T
     | {
+        upload?: T;
         src?: T;
         fallback?: T;
         alt?: T;
@@ -464,6 +487,30 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+  sizes?:
+    | T
+    | {
+        thumb?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+        wide?:
+          | T
+          | {
+              url?: T;
+              width?: T;
+              height?: T;
+              mimeType?: T;
+              filesize?: T;
+              filename?: T;
+            };
+      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -539,7 +586,11 @@ export interface Hero {
   nameLine2: string;
   nameAccent: string;
   sub: string;
-  imageSrc: string;
+  /**
+   * Recommandé. Sinon, renseignez le chemin ci-dessous.
+   */
+  image?: (number | null) | Media;
+  imageSrc?: string | null;
   imageFallback?: string | null;
   imageAlt: string;
   imageCaption: string;
@@ -567,7 +618,11 @@ export interface About {
   statProjects: string;
   statPublication: string;
   statNote: string;
-  portraitSrc: string;
+  /**
+   * Recommandé. Sinon, renseignez le chemin ci-dessous.
+   */
+  portrait?: (number | null) | Media;
+  portraitSrc?: string | null;
   portraitFallback?: string | null;
   portraitAlt: string;
   facts?:
@@ -686,6 +741,7 @@ export interface HeroSelect<T extends boolean = true> {
   nameLine2?: T;
   nameAccent?: T;
   sub?: T;
+  image?: T;
   imageSrc?: T;
   imageFallback?: T;
   imageAlt?: T;
@@ -714,6 +770,7 @@ export interface AboutSelect<T extends boolean = true> {
   statProjects?: T;
   statPublication?: T;
   statNote?: T;
+  portrait?: T;
   portraitSrc?: T;
   portraitFallback?: T;
   portraitAlt?: T;

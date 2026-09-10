@@ -1,6 +1,6 @@
 import Interactions from "./components/Interactions";
 import Projects from "./components/Projects";
-import { getContent } from "./lib/content";
+import { getContent, mediaUrl, mediaAlt } from "./lib/content";
 import type { Project } from "@/data/projects";
 
 export const dynamic = "force-dynamic";
@@ -15,6 +15,13 @@ export default async function Home() {
   const site = c.site as any;
   const st = site.sectionTitles ?? {};
 
+  const heroImg = mediaUrl(hero.image) ?? hero.imageSrc;
+  const heroImgFallback = mediaUrl(hero.image) ? undefined : hero.imageFallback;
+  const heroImgAlt = mediaAlt(hero.image) ?? hero.imageAlt;
+  const portraitImg = mediaUrl(about.portrait) ?? about.portraitSrc;
+  const portraitFallback = mediaUrl(about.portrait) ? undefined : about.portraitFallback;
+  const portraitAlt = mediaAlt(about.portrait) ?? about.portraitAlt;
+
   // normalize CMS project docs into the component's shape
   const projects: Project[] = (c.projects as any[]).map((p) => ({
     id: p.id?.toString() ?? p.title,
@@ -25,7 +32,14 @@ export default async function Home() {
     desc: p.desc,
     specs: (p.specs ?? []).map((s: any) => ({ k: s.k, v: s.v })),
     tags: (p.tags ?? []).map((t: any) => t.value),
-    images: (p.images ?? []).map((im: any) => ({ src: im.src, fallback: im.fallback ?? undefined, alt: im.alt })),
+    images: (p.images ?? [])
+      .map((im: any) => {
+        const uploaded = mediaUrl(im.upload);
+        const src = uploaded ?? im.src;
+        if (!src) return null;
+        return { src, fallback: uploaded ? undefined : (im.fallback ?? undefined), alt: mediaAlt(im.upload) ?? im.alt ?? "" };
+      })
+      .filter(Boolean),
   }));
 
   const NAV: [string, string][] = [
@@ -88,9 +102,9 @@ export default async function Home() {
               <div className="hero-media">
                 <div className="frame">
                   <picture>
-                    <source srcSet={hero.imageSrc} type="image/webp" />
+                    {!heroImgFallback && <source srcSet={heroImg} type="image/webp" />}
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={hero.imageFallback || hero.imageSrc} alt={hero.imageAlt} loading="eager" decoding="async" />
+                    <img src={heroImgFallback || heroImg} alt={heroImgAlt} loading="eager" decoding="async" />
                   </picture>
                 </div>
                 <div className="cap"><span>{hero.imageCaption}</span><span>{hero.imageYear}</span></div>
@@ -121,9 +135,9 @@ export default async function Home() {
               <div className="about-portrait reveal">
                 <div className="frame">
                   <picture>
-                    <source srcSet={about.portraitSrc} type="image/webp" />
+                    {!portraitFallback && <source srcSet={portraitImg} type="image/webp" />}
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={about.portraitFallback || about.portraitSrc} alt={about.portraitAlt} loading="lazy" decoding="async" />
+                    <img src={portraitFallback || portraitImg} alt={portraitAlt} loading="lazy" decoding="async" />
                   </picture>
                 </div>
                 <div className="facts">

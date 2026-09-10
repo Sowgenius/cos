@@ -8,6 +8,22 @@ export async function payloadClient() {
   return cached;
 }
 
+/** Resolve an uploaded Media relation (object or id) to its URL, else null. */
+export function mediaUrl(m: unknown): string | null {
+  if (m && typeof m === "object" && "url" in m && typeof (m as any).url === "string") {
+    return (m as any).url as string;
+  }
+  return null;
+}
+
+/** Resolve alt text from an uploaded Media relation. */
+export function mediaAlt(m: unknown): string | null {
+  if (m && typeof m === "object" && "alt" in m && typeof (m as any).alt === "string") {
+    return (m as any).alt as string;
+  }
+  return null;
+}
+
 export async function getContent() {
   const payload = await payloadClient();
   const [hero, about, publication, skills, contact, site, projects, experience, freelance, education] =

@@ -11,6 +11,11 @@ export const Media: CollectionConfig = {
   upload: {
     staticDir: path.resolve(dirname, "../../public/uploads"),
     mimeTypes: ["image/*"],
+    imageSizes: [
+      { name: "thumb", width: 400, height: 300, position: "centre" },
+      { name: "wide", width: 1600, height: undefined },
+    ],
+    formatOptions: { format: "webp", options: { quality: 82 } },
   },
   fields: [
     { name: "alt", type: "text", required: true, label: "Texte alternatif" },
