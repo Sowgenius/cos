@@ -1,9 +1,12 @@
 import Interactions from "./components/Interactions";
 import Projects from "./components/Projects";
-import { getContent, mediaUrl, mediaAlt } from "./lib/content";
+import Image from "next/image";
+import { getContent, mediaUrl, mediaAlt, toProject } from "./lib/content";
 import type { Project } from "@/data/projects";
 
-export const dynamic = "force-dynamic";
+// ISR: render from cache, revalidate periodically. Content stays editable via
+// /admin; changes appear within the revalidate window (or on manual revalidate).
+export const revalidate = 60;
 
 export default async function Home() {
   const c = await getContent();
@@ -16,31 +19,12 @@ export default async function Home() {
   const st = site.sectionTitles ?? {};
 
   const heroImg = mediaUrl(hero.image) ?? hero.imageSrc;
-  const heroImgFallback = mediaUrl(hero.image) ? undefined : hero.imageFallback;
   const heroImgAlt = mediaAlt(hero.image) ?? hero.imageAlt;
   const portraitImg = mediaUrl(about.portrait) ?? about.portraitSrc;
-  const portraitFallback = mediaUrl(about.portrait) ? undefined : about.portraitFallback;
   const portraitAlt = mediaAlt(about.portrait) ?? about.portraitAlt;
 
   // normalize CMS project docs into the component's shape
-  const projects: Project[] = (c.projects as any[]).map((p) => ({
-    id: p.id?.toString() ?? p.title,
-    index: p.index,
-    type: p.type,
-    title: p.title,
-    fieldLabel: p.fieldLabel,
-    desc: p.desc,
-    specs: (p.specs ?? []).map((s: any) => ({ k: s.k, v: s.v })),
-    tags: (p.tags ?? []).map((t: any) => t.value),
-    images: (p.images ?? [])
-      .map((im: any) => {
-        const uploaded = mediaUrl(im.upload);
-        const src = uploaded ?? im.src;
-        if (!src) return null;
-        return { src, fallback: uploaded ? undefined : (im.fallback ?? undefined), alt: mediaAlt(im.upload) ?? im.alt ?? "" };
-      })
-      .filter(Boolean),
-  }));
+  const projects: Project[] = (c.projects as any[]).map(toProject);
 
   const NAV: [string, string][] = [
     ["a-propos", st.about], ["experience", st.experience], ["recherche", st.research],
@@ -64,7 +48,7 @@ export default async function Home() {
         </div>
       </header>
 
-      <div className="overlay-menu" id="overlay-menu" aria-hidden="true">
+      <div className="overlay-menu" id="overlay-menu" aria-label="Menu plein écran" inert>
         <div className="overlay-menu-top">
           <span className="brand">{site.brand}<span className="brand-mark" style={{ color: "var(--accent)" }}>.</span></span>
           <button className="overlay-close" id="menu-close" aria-label="Fermer le menu">
@@ -101,11 +85,7 @@ export default async function Home() {
               </div>
               <div className="hero-media">
                 <div className="frame">
-                  <picture>
-                    {!heroImgFallback && <source srcSet={heroImg} type="image/webp" />}
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={heroImgFallback || heroImg} alt={heroImgAlt} loading="eager" decoding="async" />
-                  </picture>
+                  <Image src={heroImg} alt={heroImgAlt} fill priority sizes="(max-width: 900px) 100vw, 640px" style={{ objectFit: "cover" }} />
                 </div>
                 <div className="cap"><span>{hero.imageCaption}</span><span>{hero.imageYear}</span></div>
               </div>
@@ -125,7 +105,7 @@ export default async function Home() {
             <div className="about-grid">
               <div className="reveal">
                 <p className="about-lead">{about.lead}</p>
-                {(about.body ?? []).map((b: any, i: number) => <p className="about-body" key={i}>{b.value}</p>)}
+                {(about.body ?? []).map((b: any) => <p className="about-body" key={b.id ?? b.value}>{b.value}</p>)}
                 <p className="about-stat">
                   <span>{about.statYears}</span> terrain &amp; bureau d&apos;études.{" "}
                   <span>{about.statProjects}</span> de conception, contrôle &amp; recherche.{" "}
@@ -134,15 +114,11 @@ export default async function Home() {
               </div>
               <div className="about-portrait reveal">
                 <div className="frame">
-                  <picture>
-                    {!portraitFallback && <source srcSet={portraitImg} type="image/webp" />}
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={portraitFallback || portraitImg} alt={portraitAlt} loading="lazy" decoding="async" />
-                  </picture>
+                  <Image src={portraitImg} alt={portraitAlt} fill sizes="(max-width: 900px) 100vw, 420px" style={{ objectFit: "cover" }} />
                 </div>
                 <div className="facts">
-                  {(about.facts ?? []).map((f: any, i: number) => (
-                    <div className="row" key={i}><span className="k">{f.k}</span><span className="v">{f.v}</span></div>
+                  {(about.facts ?? []).map((f: any) => (
+                    <div className="row" key={f.id ?? f.k}><span className="k">{f.k}</span><span className="v">{f.v}</span></div>
                   ))}
                 </div>
               </div>
@@ -161,7 +137,7 @@ export default async function Home() {
                   <div>
                     <h3 className="xp-role">{e.role}</h3>
                     <p className="xp-org">{e.org}</p>
-                    <ul className="xp-points">{(e.points ?? []).map((pt: any, i: number) => <li key={i}>{pt.value}</li>)}</ul>
+                    <ul className="xp-points">{(e.points ?? []).map((pt: any) => <li key={pt.id ?? pt.value}>{pt.value}</li>)}</ul>
                   </div>
                 </div>
               ))}
@@ -177,15 +153,15 @@ export default async function Home() {
               <div>
                 <h3 className="pub-title">{pub.title}</h3>
                 <p className="pub-sub">{pub.sub}</p>
-                <ul className="pub-points">{(pub.points ?? []).map((pt: any, i: number) => <li key={i}>{pt.value}</li>)}</ul>
+                <ul className="pub-points">{(pub.points ?? []).map((pt: any) => <li key={pt.id ?? pt.value}>{pt.value}</li>)}</ul>
                 <div className="pub-actions">
                   <a className="btn btn-primary arrow" href={pub.doiUrl} target="_blank" rel="noopener">Lire la publication</a>
                   <span className="pub-doi">DOI · {pub.doi}</span>
                 </div>
               </div>
               <div className="pub-side">
-                {(pub.sideFacts ?? []).map((f: any, i: number) => (
-                  <div className="row" key={i}><div className="k">{f.k}</div><div className={"v" + (f.accent ? " accent" : "")}>{f.v}</div></div>
+                {(pub.sideFacts ?? []).map((f: any) => (
+                  <div className="row" key={f.id ?? f.k}><div className="k">{f.k}</div><div className={"v" + (f.accent ? " accent" : "")}>{f.v}</div></div>
                 ))}
               </div>
             </div>
@@ -225,21 +201,21 @@ export default async function Home() {
                 <h3 className="subhead">Techniques</h3>
                 <ul className="skill-list">
                   {(skills.technical ?? []).map((s: any, i: number) => (
-                    <li key={i}><span className="sn">{String(i + 1).padStart(2, "0")}</span><span>{s.value}</span></li>
+                    <li key={s.id ?? s.value}><span className="sn">{String(i + 1).padStart(2, "0")}</span><span>{s.value}</span></li>
                   ))}
                 </ul>
               </div>
               <div className="reveal">
                 <h3 className="subhead">Outils &amp; logiciels</h3>
                 <div className="tool-grid">
-                  {(skills.tools ?? []).map((t: any, i: number) => (
-                    <span className={"tool" + (t.key ? " key" : "")} key={i}>{t.name}</span>
+                  {(skills.tools ?? []).map((t: any) => (
+                    <span className={"tool" + (t.key ? " key" : "")} key={t.id ?? t.name}>{t.name}</span>
                   ))}
                 </div>
                 <p className="small-label" style={{ marginTop: 14 }}>En gras : maîtrise quotidienne</p>
                 <h3 className="subhead" style={{ marginTop: 36 }}>Personnelles</h3>
                 <div className="softskills">
-                  {(skills.personal ?? []).map((s: any, i: number) => <span className="s" key={i}>{s.value}</span>)}
+                  {(skills.personal ?? []).map((s: any) => <span className="s" key={s.id ?? s.value}>{s.value}</span>)}
                 </div>
               </div>
             </div>

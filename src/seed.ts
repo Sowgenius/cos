@@ -21,23 +21,15 @@ const run = async () => {
   // 2. projects (from the existing data module — single source of truth)
   const existingProjects = await payload.find({ collection: "projects", limit: 1 });
   if (existingProjects.totalDocs === 0) {
-    let order = 0;
-    for (const p of projectData) {
-      await payload.create({
-        collection: "projects",
-        data: {
-          index: p.index,
-          order: order++,
-          type: p.type,
-          title: p.title,
-          fieldLabel: p.fieldLabel,
-          desc: p.desc,
-          specs: p.specs.map((s) => ({ k: s.k, v: s.v })),
-          tags: p.tags.map((value) => ({ value })),
-          images: p.images.map((im) => ({ src: im.src, fallback: im.fallback, alt: im.alt })),
-        },
-      });
-    }
+    await Promise.all(projectData.map((p, order) => payload.create({
+      collection: "projects",
+      data: {
+        index: p.index, order, type: p.type, title: p.title, fieldLabel: p.fieldLabel, desc: p.desc,
+        specs: p.specs.map((s) => ({ k: s.k, v: s.v })),
+        tags: p.tags.map((value) => ({ value })),
+        images: p.images.map((im) => ({ src: im.src, fallback: im.fallback, alt: im.alt })),
+      },
+    })));
     payload.logger.info(`Seeded ${projectData.length} projects`);
   }
 
@@ -48,8 +40,7 @@ const run = async () => {
       { when: "Août–Sept 2024", role: "Stagiaire Conducteur de Travaux — Plomberie", org: "SENTRA BTP SA", points: ["Suivi des travaux de plomberie sur un programme de 222 villas.", "Supervision du gros œuvre d'une villa R+3."] },
       { when: "Juin–Juil 2023", role: "Stagiaire Conducteur de Travaux", org: "SENTRA BTP SA", points: ["Fondations d'un immeuble R+7 avec sous-sol.", "Coordination des équipes sur site."] },
     ];
-    let o = 0;
-    for (const e of xp) await payload.create({ collection: "experience", data: { order: o++, when: e.when, role: e.role, org: e.org, points: e.points.map((value) => ({ value })) } });
+    await Promise.all(xp.map((e, order) => payload.create({ collection: "experience", data: { order, when: e.when, role: e.role, org: e.org, points: e.points.map((value) => ({ value })) } })));
     payload.logger.info("Seeded experience");
   }
 
@@ -59,8 +50,7 @@ const run = async () => {
       { when: "2026 — en cours", title: "Concepteur freelance — Béton armé", body: "Production de plans d'exécution, vérification de conformité et rédaction de rapports techniques pour des projets en béton armé." },
       { when: "2026 — en cours", title: "Formateur en logiciels de calcul de structures", body: "Formation en ligne à la prise en main des logiciels, à la modélisation et l'analyse de bâtiments en béton armé, au dimensionnement et à la production de plans d'exécution." },
     ];
-    let o = 0;
-    for (const f of fr) await payload.create({ collection: "freelance", data: { order: o++, ...f } });
+    await Promise.all(fr.map((f, order) => payload.create({ collection: "freelance", data: { order, ...f } })));
     payload.logger.info("Seeded freelance");
   }
 
@@ -71,8 +61,7 @@ const run = async () => {
       { when: "2021 — 2023", title: "Diplôme Supérieur de Technologie", org: "ESP — Dakar, Sénégal" },
       { when: "2021", title: "Baccalauréat Scientifique S1", org: "Lycée Maba Diakhou BA" },
     ];
-    let o = 0;
-    for (const e of ed) await payload.create({ collection: "education", data: { order: o++, ...e } });
+    await Promise.all(ed.map((e, order) => payload.create({ collection: "education", data: { order, ...e } })));
     payload.logger.info("Seeded education");
   }
 

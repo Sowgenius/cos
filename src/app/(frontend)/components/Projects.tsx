@@ -1,36 +1,21 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import { type Project } from "@/data/projects";
-import { blueprintFor } from "./Blueprints";
+import { Blueprint } from "./Blueprints";
 
-/* blur-up render (handles cached-complete race) */
-function Render({ src, fallback, alt, priority }: { src: string; fallback?: string; alt: string; priority?: boolean; }) {
-  const [loaded, setLoaded] = useState(false);
-  const ref = useRef<HTMLImageElement>(null);
-  useEffect(() => {
-    const img = ref.current;
-    if (img && img.complete && img.naturalWidth > 0) setLoaded(true);
-  }, [src, fallback]);
+/* Optimized render via next/image (fill + responsive sizes). */
+function Render({ src, alt, priority, sizes }: { src: string; alt: string; priority?: boolean; sizes?: string }) {
   return (
-    <picture>
-      {fallback ? <source srcSet={src} type="image/webp" /> : null}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        ref={ref}
-        src={fallback ?? src}
-        alt={alt}
-        loading={priority ? "eager" : "lazy"}
-        decoding="async"
-        onLoad={() => setLoaded(true)}
-        style={{
-          filter: loaded ? "none" : "blur(14px)",
-          transform: loaded ? "none" : "scale(1.05)",
-          opacity: loaded ? 1 : 0.5,
-          transition: "filter .6s cubic-bezier(.16,1,.3,1), transform .6s cubic-bezier(.16,1,.3,1), opacity .4s ease",
-        }}
-      />
-    </picture>
+    <Image
+      src={src}
+      alt={alt}
+      fill
+      sizes={sizes ?? "(max-width: 820px) 100vw, 50vw"}
+      priority={priority}
+      style={{ objectFit: "cover" }}
+    />
   );
 }
 
@@ -38,17 +23,16 @@ function MediaField({ project, priority }: { project: Project; priority?: boolea
   const has = project.images.length > 0;
   return (
     <div className={"proj-frame" + (has ? "" : " blueprint-field")} role="img" aria-label={has ? project.images[0].alt : project.fieldLabel}>
-      {has ? <Render src={project.images[0].src} fallback={project.images[0].fallback} alt={project.images[0].alt} priority={priority} /> : blueprintFor(project.id)}
+      {has ? <Render src={project.images[0].src} alt={project.images[0].alt} priority={priority} /> : <Blueprint id={project.id} />}
       {has && <span className="badge">{String(project.images.length).padStart(2, "0")} vues</span>}
       <span className="caption">{project.fieldLabel}</span>
     </div>
   );
 }
 
-const FOCUSABLE = 'a[href],button:not([disabled]),[tabindex]:not([tabindex="-1"])';
 
 function ProjectDetail({ project, onClose }: { project: Project; onClose: () => void }) {
-  const dialogRef = useRef<HTMLDivElement>(null);
+  const dialogRef = useRef<HTMLDialogElement>(null);
   const [active, setActive] = useState(0);
   const has = project.images.length > 0;
   const count = project.images.length;
@@ -56,38 +40,40 @@ function ProjectDetail({ project, onClose }: { project: Project; onClose: () => 
   const go = useCallback((d: number) => setActive((i) => Math.min(Math.max(i + d, 0), count - 1)), [count]);
 
   useEffect(() => {
+    const dialog = dialogRef.current;
+    if (dialog && !dialog.open) dialog.showModal();
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    const dialog = dialogRef.current;
-    dialog?.focus();
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") { onClose(); return; }
       if (e.key === "ArrowRight" && has) go(1);
       if (e.key === "ArrowLeft" && has) go(-1);
-      if (e.key === "Tab" && dialog) {
-        // focus trap
-        const nodes = Array.from(dialog.querySelectorAll<HTMLElement>(FOCUSABLE)).filter((n) => n.offsetParent !== null);
-        if (nodes.length === 0) return;
-        const first = nodes[0], last = nodes[nodes.length - 1];
-        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
-      }
     };
+    // backdrop click closes (attached imperatively so it stays off non-interactive JSX)
+    const onClick = (e: MouseEvent) => { if (e.target === dialog) dialog?.close(); };
     window.addEventListener("keydown", onKey);
-    return () => { window.removeEventListener("keydown", onKey); document.body.style.overflow = prev; };
-  }, [onClose, go, has]);
+    dialog?.addEventListener("click", onClick);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      dialog?.removeEventListener("click", onClick);
+      document.body.style.overflow = prev;
+    };
+  }, [go, has]);
 
   return (
-    <div className="proj-overlay" role="dialog" aria-modal="true" aria-label={`Projet : ${project.title}`}>
-      <button className="proj-scrim" aria-label="Fermer le projet" onClick={onClose} />
-      <div className="proj-detail" ref={dialogRef} tabIndex={-1}>
+    <dialog
+      className="proj-dialog"
+      ref={dialogRef}
+      aria-label={`Projet : ${project.title}`}
+      onClose={onClose}
+    >
+      <div className="proj-detail">
         <div className="detail-head">
           <div>
             <span className="detail-num">{project.index}</span>
             <p className="detail-kind">{project.type}</p>
             <h3 className="detail-title">{project.title}</h3>
           </div>
-          <button className="detail-close" onClick={onClose} aria-label="Fermer">
+          <button className="detail-close" onClick={() => dialogRef.current?.close()} aria-label="Fermer">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6 L18 18 M18 6 L6 18" fill="none" stroke="currentColor" strokeWidth="1.6" /></svg>
           </button>
         </div>
@@ -95,7 +81,7 @@ function ProjectDetail({ project, onClose }: { project: Project; onClose: () => 
         {has ? (
           <>
             <div className="stage">
-              <Render key={project.images[active].src} src={project.images[active].src} fallback={project.images[active].fallback} alt={project.images[active].alt} priority />
+              <Render key={project.images[active].src} src={project.images[active].src} alt={project.images[active].alt} priority sizes="(max-width: 1160px) 100vw, 1120px" />
               {count > 1 && (
                 <>
                   <button className="stage-arrow prev" aria-label="Vue précédente" onClick={() => go(-1)} disabled={active === 0}>
@@ -111,14 +97,14 @@ function ProjectDetail({ project, onClose }: { project: Project; onClose: () => 
             <div className="thumbs" role="tablist" aria-label="Vues du projet">
               {project.images.map((img, i) => (
                 <button key={img.src} className={"thumb" + (i === active ? " active" : "")} role="tab" aria-selected={i === active} aria-label={`Vue ${i + 1} : ${img.alt}`} onClick={() => setActive(i)}>
-                  <Render src={img.src} fallback={img.fallback} alt="" />
+                  <Render src={img.src} alt="" sizes="120px" />
                 </button>
               ))}
             </div>
           </>
         ) : (
           <div className="stage stage-blueprint">
-            {blueprintFor(project.id)}
+            {<Blueprint id={project.id} />}
             <span className="stage-note">Plans, notes de calcul et modèles disponibles sur demande.</span>
           </div>
         )}
@@ -140,7 +126,7 @@ function ProjectDetail({ project, onClose }: { project: Project; onClose: () => 
           </div>
         </div>
       </div>
-    </div>
+    </dialog>
   );
 }
 

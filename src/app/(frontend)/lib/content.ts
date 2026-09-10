@@ -53,3 +53,22 @@ export async function getContent() {
     education: education.docs,
   };
 }
+
+/** Normalize a Payload project doc to the frontend Project shape. */
+export function toProject(p: any) {
+  return {
+    id: p.id?.toString() ?? p.title,
+    index: p.index,
+    type: p.type,
+    title: p.title,
+    fieldLabel: p.fieldLabel,
+    desc: p.desc,
+    specs: (p.specs ?? []).map((s: any) => ({ k: s.k, v: s.v })),
+    tags: (p.tags ?? []).map((t: any) => t.value),
+    images: (p.images ?? []).flatMap((im: any) => {
+      const uploaded = mediaUrl(im.upload);
+      const src = uploaded ?? im.src;
+      return src ? [{ src, alt: mediaAlt(im.upload) ?? im.alt ?? "" }] : [];
+    }),
+  };
+}

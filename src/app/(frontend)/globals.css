@@ -286,9 +286,9 @@ h1, h2, h3, h4 { text-wrap: balance; margin: 0; }
 }
 
 /* FLIP detail overlay */
-.proj-overlay { position: fixed; inset: 0; z-index: 90; display: grid; place-items: stretch; }
-.proj-scrim { position: absolute; inset: 0; background: color-mix(in srgb, var(--ink) 80%, transparent); border: 0; cursor: pointer; }
-.proj-detail { position: relative; z-index: 1; justify-self: center; align-self: center; width: min(1160px, 100%); max-height: calc(100dvh - clamp(24px, 6vw, 88px)); overflow-y: auto; overscroll-behavior: contain; background: var(--paper); border: 2px solid var(--ink); border-radius: var(--radius); padding: clamp(20px, 3vw, 44px); transform-origin: top left; margin: clamp(12px, 3vw, 44px); }
+.proj-dialog { position: fixed; inset: 0; margin: auto; max-width: min(1160px, 100%); max-height: calc(100dvh - clamp(24px, 6vw, 88px)); width: 100%; border: 0; background: transparent; padding: 0; overflow: visible; }
+.proj-dialog::backdrop { background: color-mix(in srgb, var(--ink) 80%, transparent); backdrop-filter: blur(2px); }
+.proj-detail { position: relative; z-index: 1; width: 100%; max-height: calc(100dvh - clamp(24px, 6vw, 88px)); overflow-y: auto; overscroll-behavior: contain; background: var(--paper); border: 2px solid var(--ink); border-radius: var(--radius); padding: clamp(20px, 3vw, 44px); transform-origin: top left; }
 .proj-detail:focus { outline: none; }
 .detail-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; margin-bottom: 20px; }
 .detail-num { font-family: var(--font-display); font-weight: 900; font-variant-numeric: tabular-nums; font-size: clamp(28px, 4vw, 48px); color: var(--accent); line-height: 0.86; }
