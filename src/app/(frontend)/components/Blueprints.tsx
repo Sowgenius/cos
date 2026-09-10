@@ -1,4 +1,3 @@
-import type { ReactNode } from "react";
 
 /** Rebar footing section — used for structural/foundation projects. */
 export function BlueprintFooting() {
@@ -60,7 +59,7 @@ export function BlueprintElevation() {
   );
 }
 
-export function blueprintFor(id: string): ReactNode {
+export function Blueprint({ id }: { id: string }) {
   if (id === "villa-bamar") return <BlueprintFooting />;
   if (id === "baay-mass") return <BlueprintElevation />;
   return <BlueprintPlan />;
