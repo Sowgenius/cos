@@ -271,7 +271,7 @@ export default async function Home() {
 
       <footer className="foot">
         <div className="wrap foot-inner">
-          <span>© {site.brand} · {new Date().getFullYear()}</span>
+          <span>© Sancres.com · {new Date().getFullYear()}</span>
           <div className="foot-links">
             <a className="link" href={firstPub.doiUrl} target="_blank" rel="noopener">Publication Zenodo</a>
             <a className="link" href={contact.linkedin} target="_blank" rel="noopener">LinkedIn</a>
