@@ -1,5 +1,6 @@
 import Interactions from "./components/Interactions";
 import Projects from "./components/Projects";
+import PublicationCarousel from "./components/PublicationCarousel";
 import Image from "next/image";
 import { getContent, mediaUrl, mediaAlt, toProject } from "./lib/content";
 import type { Project } from "@/data/projects";
@@ -16,7 +17,10 @@ export default async function Home() {
   const hero = c.hero as any;
   const about = c.about as any;
   const pub = c.publication as any;
+  const pubItems = (pub.items ?? []) as any[];
+  const firstPub = pubItems[0] ?? {};
   const skills = c.skills as any;
+  const stats = c.stats as any;
   const contact = c.contact as any;
   const site = c.site as any;
   const st = site.sectionTitles ?? {};
@@ -31,7 +35,8 @@ export default async function Home() {
 
   const NAV: [string, string][] = [
     ["a-propos", st.about], ["experience", st.experience], ["recherche", st.research],
-    ["projets", st.projects], ["competences", st.skills], ["contact", st.contact],
+    ["projets", st.projects], ["freelance", st.freelance],
+    ["competences", st.skills], ["formation", st.education], ["contact", st.contact],
   ];
 
   return (
@@ -110,10 +115,25 @@ export default async function Home() {
                 <p className="about-lead">{about.lead}</p>
                 {(about.body ?? []).map((b: any) => <p className="about-body" key={b.id ?? b.value}>{b.value}</p>)}
                 <p className="about-stat">
-                  <span>{about.statYears}</span> terrain &amp; bureau d&apos;études.{" "}
-                  <span>{about.statProjects}</span> de conception, contrôle &amp; recherche.{" "}
-                  <span>{about.statPublication}</span> scientifique — <em>{about.statNote}</em>.
+                  <span>{about.statYears}</span> {about.statYearsText}{" "}
+                  <span>{about.statProjects}</span> {about.statProjectsText}{" "}
+                  <span>{about.statPublication}</span> {about.statPublicationText} — <em>{about.statNote}</em>
                 </p>
+                {(stats.items ?? []).length > 0 && (
+                  <dl className="tally" aria-label={stats.title}>
+                    {(stats.items as any[]).map((s) => {
+                      const m = String(s.value).match(/^(\d+)(\D*)$/);
+                      const num = m ? m[1] : s.value;
+                      const suffix = m ? m[2] : "";
+                      return (
+                        <div className="tally-item" key={s.id ?? s.label}>
+                          <dt className="tally-num">{num}<span className="tally-suffix">{suffix}</span></dt>
+                          <dd className="tally-label">{s.label}</dd>
+                        </div>
+                      );
+                    })}
+                  </dl>
+                )}
               </div>
               <div className="about-portrait reveal">
                 <div className="frame">
@@ -152,22 +172,7 @@ export default async function Home() {
         <section className="section band-ink" id="recherche">
           <div className="wrap">
             <div className="ed-head reveal"><p className="ed-index">03</p><div className="ed-head-text"><h2 className="ed-title">{st.research}</h2></div></div>
-            <div className="pub reveal">
-              <div>
-                <h3 className="pub-title">{pub.title}</h3>
-                <p className="pub-sub">{pub.sub}</p>
-                <ul className="pub-points">{(pub.points ?? []).map((pt: any) => <li key={pt.id ?? pt.value}>{pt.value}</li>)}</ul>
-                <div className="pub-actions">
-                  <a className="btn btn-primary arrow" href={pub.doiUrl} target="_blank" rel="noopener">Lire la publication</a>
-                  <span className="pub-doi">DOI · {pub.doi}</span>
-                </div>
-              </div>
-              <div className="pub-side">
-                {(pub.sideFacts ?? []).map((f: any) => (
-                  <div className="row" key={f.id ?? f.k}><div className="k">{f.k}</div><div className={"v" + (f.accent ? " accent" : "")}>{f.v}</div></div>
-                ))}
-              </div>
-            </div>
+            <PublicationCarousel items={pubItems} />
           </div>
         </section>
 
@@ -201,7 +206,7 @@ export default async function Home() {
             <div className="ed-head reveal"><p className="ed-index">06</p><div className="ed-head-text"><h2 className="ed-title">{st.skills}</h2></div></div>
             <div className="skills-grid">
               <div className="reveal">
-                <h3 className="subhead">Techniques</h3>
+                <h3 className="subhead">{skills.technicalLabel}</h3>
                 <ul className="skill-list">
                   {(skills.technical ?? []).map((s: any, i: number) => (
                     <li key={s.id ?? s.value}><span className="sn">{String(i + 1).padStart(2, "0")}</span><span>{s.value}</span></li>
@@ -209,14 +214,14 @@ export default async function Home() {
                 </ul>
               </div>
               <div className="reveal">
-                <h3 className="subhead">Outils &amp; logiciels</h3>
+                <h3 className="subhead">{skills.toolsLabel}</h3>
                 <div className="tool-grid">
                   {(skills.tools ?? []).map((t: any) => (
                     <span className={"tool" + (t.key ? " key" : "")} key={t.id ?? t.name}>{t.name}</span>
                   ))}
                 </div>
-                <p className="small-label" style={{ marginTop: 14 }}>En gras : maîtrise quotidienne</p>
-                <h3 className="subhead" style={{ marginTop: 36 }}>Personnelles</h3>
+                <p className="small-label" style={{ marginTop: 14 }}>{skills.toolsNote}</p>
+                <h3 className="subhead" style={{ marginTop: 36 }}>{skills.personalLabel}</h3>
                 <div className="softskills">
                   {(skills.personal ?? []).map((s: any) => <span className="s" key={s.id ?? s.value}>{s.value}</span>)}
                 </div>
@@ -268,7 +273,7 @@ export default async function Home() {
         <div className="wrap foot-inner">
           <span>© {site.brand} · {new Date().getFullYear()}</span>
           <div className="foot-links">
-            <a className="link" href={pub.doiUrl} target="_blank" rel="noopener">Publication Zenodo</a>
+            <a className="link" href={firstPub.doiUrl} target="_blank" rel="noopener">Publication Zenodo</a>
             <a className="link" href={contact.linkedin} target="_blank" rel="noopener">LinkedIn</a>
             <a className="link" href={contact.github} target="_blank" rel="noopener">GitHub</a>
             <span>{site.footerNote}</span>
