@@ -6,8 +6,8 @@
   "scripts": {
     "setup": "bash scripts/setup.sh",
     "dev": "next dev -p 3000",
-    "build": "payload migrate && next build",
-    "build:next": "next build",
+    "build": "next build",
+    "vercel-build": "payload migrate && next build",
     "start": "next start -p 3000",
     "lint": "next lint",
     "payload": "payload",

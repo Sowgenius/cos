@@ -109,16 +109,36 @@ Everything on the site is editable from `/admin`.
 - `Users` — admin users
 
 **Globals** (single-instance content):
-- `Hero`, `About`, `Publication`, `Skills`, `Contact`, `Site`
+- `Hero`, `About`, `Publication` (holds multiple articles — the Recherche section becomes a carousel when there is more than one), `Skills`, `Stats` (the "chiffres" tally block shown inside À propos), `Contact`, `Site`
 
 ## Deployment
 
-1. Provision PostgreSQL and set `DATABASE_URI` + `PAYLOAD_SECRET` in the environment.
-2. Build: `pnpm install && pnpm build`.
-3. **Apply migrations before starting:** `pnpm migrate`. Production does not auto-sync the schema — it applies the committed files in `src/migrations/`.
-4. Start: `pnpm start`.
+Migrations run **automatically on every deploy**. Vercel prefers the `vercel-build`
+script when present, which is set to `payload migrate && next build` — so committed
+migrations in `src/migrations/` are applied against the production database before
+the app is built. (The plain `build` script stays `next build` so local builds and
+collaborators don't need a database connection.)
 
-When you change collections/globals, generate a migration locally (`pnpm migrate:create <name>`), commit it, and it will be applied on the next deploy.
+1. Provision PostgreSQL and set `DATABASE_URI` + `PAYLOAD_SECRET` in the Vercel project env.
+2. Deploy. Vercel runs `pnpm install` then `vercel-build` (`payload migrate && next build`).
+3. Seed once if the database is empty (the site renders blank until content exists):
+   `pnpm seed` — or enter content from `/admin`.
+
+When you change collections/globals, generate a migration locally
+(`pnpm migrate:create <name>`), commit it, and it is applied on the next deploy.
+
+> **Important — the production database must follow the migrations workflow, not dev push.**
+> `payload migrate` only runs cleanly and non-interactively against a database whose
+> schema was built by migrations. If the production database was ever run in dev mode
+> (dynamic schema push), Payload writes a `batch = -1` sentinel row into
+> `payload_migrations`; the next `payload migrate` then shows an interactive
+> data-loss prompt (which cannot be answered in Vercel's non-TTY build and defaults
+> to skipping migrations). Deploy against a **fresh database** that has never been
+> dev-pushed. If you must adopt an already dev-pushed database, baseline it once:
+> mark the existing migrations as applied (insert their rows into `payload_migrations`
+> with a real batch and remove the `batch = -1` row) so future `payload migrate` runs
+> only apply new migrations. Do this deliberately, with a backup — never let the build
+> re-run the initial migration against tables that already exist.
 
 ## Branches
 
